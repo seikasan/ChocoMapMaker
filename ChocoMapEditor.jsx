@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { 
-  Download, Upload, Plus, Eraser, Layers, MousePointer2, 
+import {
+  Download, Upload, Plus, Eraser, Layers, MousePointer2,
   Map, Ghost, Wrench, PackagePlus, X
 } from 'lucide-react';
 
@@ -16,7 +16,8 @@ const DEFAULT_BLOCKS = [
   { id: 'door', name: 'ドア', color: '#808080', category: 'terrain' },
   { id: 'moving', name: '動く床', color: '#8080ff', category: 'terrain' },
   { id: 'coin', name: 'アラザン', color: '#d0d0d0', category: 'terrain' },
-  
+  { id: 'net', name: '網', color: '#d0d0d08a', category: 'terrain' },
+
   { id: 'marshmallow', name: 'マシュマロ', color: '#FFFFFF', category: 'enemy' },
   { id: 'gummy', name: 'グミ', color: '#f472b6', category: 'enemy' },
   { id: 'almond', name: 'アーモンド', color: '#DEB887', category: 'enemy' },
@@ -24,7 +25,7 @@ const DEFAULT_BLOCKS = [
   { id: 'mint', name: 'ミント', color: '#86efac', category: 'enemy' },
   { id: 'rrc', name: 'RRC', color: '#c026d3', category: 'enemy' },
   { id: 'gum', name: 'ガム', color: '#fbcfe8', category: 'enemy' },
-  
+
   { id: 'knife', name: '包丁', color: '#fda4af', category: 'gimmick' },
   { id: 'paper', name: '包み紙', color: '#cbd5e1', category: 'gimmick' },
   { id: 'switch', name: 'スイッチ', color: '#f97316', category: 'gimmick' },
@@ -39,7 +40,7 @@ export default function ChocoMapEditor() {
   const [customBlocks, setCustomBlocks] = useState([]);
   const [hoverCell, setHoverCell] = useState(null);
   const [isSpaceDown, setIsSpaceDown] = useState(false);
-  
+
   // モーダル用ステート
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newBlockName, setNewBlockName] = useState('');
@@ -70,7 +71,7 @@ export default function ChocoMapEditor() {
   const handleWheel = useCallback((e) => {
     const zoomFactor = 1.1;
     const direction = e.deltaY > 0 ? -1 : 1;
-    
+
     setCamera(prev => {
       let newZoom = prev.zoom * (direction > 0 ? zoomFactor : 1 / zoomFactor);
       newZoom = Math.max(0.1, Math.min(newZoom, 5));
@@ -147,7 +148,7 @@ export default function ChocoMapEditor() {
     } else {
       const { x, y } = getCellCoords(e.clientX, e.clientY);
       setHoverCell({ x, y });
-      
+
       if (isDrawingRef.current) {
         if (!lastPosRef.current || lastPosRef.current.x !== x || lastPosRef.current.y !== y) {
           applyBlock(x, y);
@@ -218,12 +219,12 @@ export default function ChocoMapEditor() {
   const renderLayerBlocks = (layerName, isTarget) => {
     const data = mapData[layerName];
     const elements = [];
-    
+
     for (const [key, blockId] of Object.entries(data)) {
       const [x, y] = key.split(',').map(Number);
       const block = allBlocks.find(b => b.id === blockId);
       if (!block) continue;
-      
+
       let zIndex = layerName === 'fg' ? 10 : 1;
       let opacity = 1;
       let scale = 1;
@@ -232,13 +233,13 @@ export default function ChocoMapEditor() {
       // 非アクティブレイヤーの視覚調整（2.5Dの表現）
       if (activeLayer === 'fg' && layerName === 'bg') {
         opacity = 0.5;
-        scale = 0.85; 
+        scale = 0.85;
         filter = 'brightness(0.6)';
         zIndex = 1;
       } else if (activeLayer === 'bg' && layerName === 'fg') {
         opacity = 0.25;
-        scale = 1.1; 
-        zIndex = 20; 
+        scale = 1.1;
+        zIndex = 20;
       }
 
       elements.push(
@@ -282,14 +283,13 @@ export default function ChocoMapEditor() {
             <button
               key={block.id}
               onClick={() => setSelectedBlockId(block.id)}
-              className={`flex items-center gap-2 p-1.5 rounded-md border-2 transition-all ${
-                selectedBlockId === block.id 
-                  ? 'border-amber-500 bg-amber-100 shadow-sm' 
+              className={`flex items-center gap-2 p-1.5 rounded-md border-2 transition-all ${selectedBlockId === block.id
+                  ? 'border-amber-500 bg-amber-100 shadow-sm'
                   : 'border-transparent hover:bg-amber-100/50'
-              }`}
+                }`}
               title={block.name}
             >
-              <div 
+              <div
                 className="w-6 h-6 rounded flex-shrink-0 border border-black/10 flex items-center justify-center"
                 style={{ backgroundColor: block.color }}
               >
@@ -307,7 +307,7 @@ export default function ChocoMapEditor() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden text-slate-800 font-sans bg-slate-900 select-none">
-      
+
       {/* 左サイドバー：パレット */}
       <div className="w-64 bg-amber-50 border-r border-amber-200 flex flex-col shadow-xl z-20 h-full">
         <div className="p-4 border-b border-amber-200 bg-amber-100/50">
@@ -315,14 +315,14 @@ export default function ChocoMapEditor() {
             🍫 ちょこ旅 Editor
           </h1>
         </div>
-        
+
         <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
           {renderPaletteGroup('tool', 'ツール', <Wrench size={14} />)}
           {renderPaletteGroup('terrain', '地形・環境', <Map size={14} />)}
           {renderPaletteGroup('enemy', '敵キャラクター', <Ghost size={14} />)}
           {renderPaletteGroup('gimmick', 'ギミック', <PackagePlus size={14} />)}
           {renderPaletteGroup('custom', 'カスタム', <Layers size={14} />)}
-          
+
           <button
             onClick={() => setIsModalOpen(true)}
             className="w-full mt-2 py-2 border-2 border-dashed border-amber-300 text-amber-700 rounded-lg hover:bg-amber-100 hover:border-amber-400 transition-colors flex items-center justify-center gap-2 text-sm font-bold"
@@ -330,55 +330,55 @@ export default function ChocoMapEditor() {
             <Plus size={16} /> カスタムブロック追加
           </button>
         </div>
-        
+
         <div className="p-4 bg-amber-100/50 border-t border-amber-200 text-xs text-amber-800/80">
-          <p className="mb-1 flex items-center gap-1"><MousePointer2 size={12}/> 左クリック: 配置</p>
-          <p className="mb-1 flex items-center gap-1"><MousePointer2 size={12}/> 右ドラッグ: 視点移動</p>
-          <p className="flex items-center gap-1"><MousePointer2 size={12}/> ホイール: 拡大/縮小</p>
+          <p className="mb-1 flex items-center gap-1"><MousePointer2 size={12} /> 左クリック: 配置</p>
+          <p className="mb-1 flex items-center gap-1"><MousePointer2 size={12} /> 右ドラッグ: 視点移動</p>
+          <p className="flex items-center gap-1"><MousePointer2 size={12} /> ホイール: 拡大/縮小</p>
         </div>
       </div>
-      
+
       {/* メインエリア */}
       <div className="flex-1 flex flex-col relative">
         {/* ヘッダー */}
         <div className="h-14 bg-amber-900 text-amber-50 flex items-center px-6 justify-between shadow-md z-10">
           <div className="flex items-center gap-4">
-             <div className="text-sm font-medium bg-amber-800 px-3 py-1 rounded-full border border-amber-700 shadow-inner">
-               現在のツール: <span className="font-bold text-amber-200">{selectedBlock?.name}</span>
-             </div>
+            <div className="text-sm font-medium bg-amber-800 px-3 py-1 rounded-full border border-amber-700 shadow-inner">
+              現在のツール: <span className="font-bold text-amber-200">{selectedBlock?.name}</span>
+            </div>
           </div>
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={exportData}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-700 hover:bg-amber-600 rounded-md text-sm font-medium transition-colors"
             >
               <Download size={16} /> 保存 (JSON)
             </button>
-            <button 
+            <button
               onClick={() => fileInputRef.current?.click()}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-700 hover:bg-amber-600 rounded-md text-sm font-medium transition-colors"
             >
               <Upload size={16} /> 読込
             </button>
-            <input 
-              type="file" 
-              accept=".json" 
-              className="hidden" 
-              ref={fileInputRef} 
-              onChange={importData} 
+            <input
+              type="file"
+              accept=".json"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={importData}
             />
           </div>
         </div>
-        
+
         {/* キャンバスエリア */}
-        <div 
+        <div
           ref={containerRef}
           className="flex-1 relative overflow-hidden bg-slate-200"
           style={{
-             backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)`,
-             backgroundSize: `${CELL_SIZE * camera.zoom}px ${CELL_SIZE * camera.zoom}px`,
-             backgroundPosition: `${camera.x}px ${camera.y}px`,
-             cursor: isSpaceDown ? 'grab' : 'crosshair'
+            backgroundImage: `linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)`,
+            backgroundSize: `${CELL_SIZE * camera.zoom}px ${CELL_SIZE * camera.zoom}px`,
+            backgroundPosition: `${camera.x}px ${camera.y}px`,
+            cursor: isSpaceDown ? 'grab' : 'crosshair'
           }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
@@ -386,27 +386,27 @@ export default function ChocoMapEditor() {
           onPointerLeave={handlePointerLeave}
           onContextMenu={e => e.preventDefault()}
         >
-          <div 
+          <div
             style={{
-               transform: `translate(${camera.x}px, ${camera.y}px) scale(${camera.zoom})`,
-               transformOrigin: '0 0',
-               width: '100%',
-               height: '100%',
-               position: 'absolute',
-               top: 0,
-               left: 0,
-               pointerEvents: 'none'
+              transform: `translate(${camera.x}px, ${camera.y}px) scale(${camera.zoom})`,
+              transformOrigin: '0 0',
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              pointerEvents: 'none'
             }}
           >
             {/* 奥レイヤー */}
             {renderLayerBlocks('bg', activeLayer === 'bg')}
-            
+
             {/* 手前レイヤー */}
             {renderLayerBlocks('fg', activeLayer === 'fg')}
-            
+
             {/* ホバーカーソル（選択中ブロックのプレビュー） */}
             {hoverCell && selectedBlock && selectedBlockId !== 'eraser' && (
-              <div 
+              <div
                 className="absolute border-2 border-white shadow-[0_0_8px_rgba(0,0,0,0.5)] z-50 pointer-events-none rounded opacity-60"
                 style={{
                   left: hoverCell.x * CELL_SIZE,
@@ -418,7 +418,7 @@ export default function ChocoMapEditor() {
               />
             )}
             {hoverCell && selectedBlockId === 'eraser' && (
-              <div 
+              <div
                 className="absolute border-2 border-red-500 bg-red-500/20 z-50 pointer-events-none rounded"
                 style={{
                   left: hoverCell.x * CELL_SIZE,
@@ -430,27 +430,25 @@ export default function ChocoMapEditor() {
             )}
           </div>
         </div>
-        
+
         {/* レイヤー切り替えUI (中央下部) */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white p-1.5 rounded-full shadow-2xl flex border-2 border-amber-200 z-30">
           <button
             onClick={() => setActiveLayer('bg')}
-            className={`px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${
-              activeLayer === 'bg' 
-                ? 'bg-amber-600 text-white shadow-md' 
+            className={`px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${activeLayer === 'bg'
+                ? 'bg-amber-600 text-white shadow-md'
                 : 'text-slate-500 hover:bg-amber-50'
-            }`}
+              }`}
           >
-            <Layers size={18} opacity={activeLayer === 'bg' ? 1 : 0.5} /> 
+            <Layers size={18} opacity={activeLayer === 'bg' ? 1 : 0.5} />
             奥レイヤー (背景)
           </button>
           <button
             onClick={() => setActiveLayer('fg')}
-            className={`px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${
-              activeLayer === 'fg' 
-                ? 'bg-amber-500 text-white shadow-md' 
+            className={`px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${activeLayer === 'fg'
+                ? 'bg-amber-500 text-white shadow-md'
                 : 'text-slate-500 hover:bg-amber-50'
-            }`}
+              }`}
           >
             <Layers size={18} className="transform translate-y-[-2px] translate-x-[2px]" />
             手前レイヤー (メイン)
@@ -470,12 +468,12 @@ export default function ChocoMapEditor() {
                 <X size={20} />
               </button>
             </div>
-            
+
             <form onSubmit={handleAddCustomBlock} className="p-5 space-y-4">
               <div>
                 <label className="block text-sm font-bold text-amber-900 mb-1">ブロックの名前</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={newBlockName}
                   onChange={(e) => setNewBlockName(e.target.value)}
                   className="w-full px-3 py-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
@@ -484,12 +482,12 @@ export default function ChocoMapEditor() {
                   required
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-bold text-amber-900 mb-1">ブロックの色</label>
                 <div className="flex items-center gap-3">
-                  <input 
-                    type="color" 
+                  <input
+                    type="color"
                     value={newBlockColor}
                     onChange={(e) => setNewBlockColor(e.target.value)}
                     className="w-12 h-12 rounded cursor-pointer border-0 p-0"
@@ -499,16 +497,16 @@ export default function ChocoMapEditor() {
                   </span>
                 </div>
               </div>
-              
+
               <div className="pt-4 flex gap-2">
-                <button 
+                <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   className="flex-1 py-2 rounded-md font-bold text-amber-800 bg-amber-200 hover:bg-amber-300 transition-colors"
                 >
                   キャンセル
                 </button>
-                <button 
+                <button
                   type="submit"
                   className="flex-1 py-2 rounded-md font-bold text-white bg-amber-600 hover:bg-amber-700 transition-colors"
                 >
@@ -519,8 +517,9 @@ export default function ChocoMapEditor() {
           </div>
         </div>
       )}
-      
-      <style dangerouslySetInnerHTML={{__html: `
+
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 6px;
         }
