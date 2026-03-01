@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import {
   Download, Upload, Plus, Eraser, Layers, MousePointer2,
-  Map, Ghost, Wrench, PackagePlus, X
+  Map, Ghost, Wrench, PackagePlus, X, FileText
 } from 'lucide-react';
 
 // --- 初期データと定数 ---
@@ -42,6 +42,7 @@ export default function ChocoMapEditor() {
   const [customBlocks, setCustomBlocks] = useState([]);
   const [hoverCell, setHoverCell] = useState(null);
   const [isSpaceDown, setIsSpaceDown] = useState(false);
+  const [exportFileName, setExportFileName] = useState('chocotabi_stage');
 
   // モーダル用ステート
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -178,7 +179,7 @@ export default function ChocoMapEditor() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'chocotabi_stage.json';
+    a.download = (exportFileName.trim() || 'chocotabi_stage') + '.json';
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -350,11 +351,22 @@ export default function ChocoMapEditor() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 bg-amber-800 rounded-md px-2 py-1">
+              <FileText size={14} className="text-amber-300 flex-shrink-0" />
+              <input
+                type="text"
+                value={exportFileName}
+                onChange={(e) => setExportFileName(e.target.value)}
+                className="bg-transparent text-amber-100 text-sm font-medium w-36 outline-none placeholder-amber-400/60 border-b border-amber-600 focus:border-amber-400 transition-colors"
+                placeholder="ファイル名"
+              />
+              <span className="text-amber-400/80 text-xs">.json</span>
+            </div>
             <button
               onClick={exportData}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-700 hover:bg-amber-600 rounded-md text-sm font-medium transition-colors"
             >
-              <Download size={16} /> 保存 (JSON)
+              <Download size={16} /> 保存
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
