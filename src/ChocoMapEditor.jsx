@@ -21,7 +21,7 @@ const DEFAULT_BLOCKS = [
   { id: 'marshmallow', name: 'マシュマロ', color: '#FFFFFF', category: 'enemy' },
   { id: 'gummy', name: 'グミ', color: '#f472b6', category: 'enemy' },
   { id: 'almond', name: 'アーモンド', color: '#DEB887', category: 'enemy' },
-  { id: 'candy', name: 'わたパチ', color: '#fbbf24', category: 'enemy' },
+  { id: 'candy', name: 'わたパチ', color: '#b0ffff', category: 'enemy' },
   { id: 'mint', name: 'ミント', color: '#86efac', category: 'enemy' },
   { id: 'rrc', name: 'RRC', color: '#c026d3', category: 'enemy' },
   { id: 'gum', name: 'ガム', color: '#fbcfe8', category: 'enemy' },
@@ -284,8 +284,8 @@ export default function ChocoMapEditor() {
               key={block.id}
               onClick={() => setSelectedBlockId(block.id)}
               className={`flex items-center gap-2 p-1.5 rounded-md border-2 transition-all ${selectedBlockId === block.id
-                  ? 'border-amber-500 bg-amber-100 shadow-sm'
-                  : 'border-transparent hover:bg-amber-100/50'
+                ? 'border-amber-500 bg-amber-100 shadow-sm'
+                : 'border-transparent hover:bg-amber-100/50'
                 }`}
               title={block.name}
             >
@@ -436,8 +436,8 @@ export default function ChocoMapEditor() {
           <button
             onClick={() => setActiveLayer('bg')}
             className={`px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${activeLayer === 'bg'
-                ? 'bg-amber-600 text-white shadow-md'
-                : 'text-slate-500 hover:bg-amber-50'
+              ? 'bg-amber-600 text-white shadow-md'
+              : 'text-slate-500 hover:bg-amber-50'
               }`}
           >
             <Layers size={18} opacity={activeLayer === 'bg' ? 1 : 0.5} />
@@ -446,8 +446,8 @@ export default function ChocoMapEditor() {
           <button
             onClick={() => setActiveLayer('fg')}
             className={`px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${activeLayer === 'fg'
-                ? 'bg-amber-500 text-white shadow-md'
-                : 'text-slate-500 hover:bg-amber-50'
+              ? 'bg-amber-500 text-white shadow-md'
+              : 'text-slate-500 hover:bg-amber-50'
               }`}
           >
             <Layers size={18} className="transform translate-y-[-2px] translate-x-[2px]" />
