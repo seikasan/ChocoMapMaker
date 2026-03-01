@@ -30,6 +30,7 @@ const DEFAULT_BLOCKS = [
   { id: 'paper', name: '包み紙', color: '#cbd5e1', category: 'gimmick' },
   { id: 'switch', name: 'スイッチ', color: '#f97316', category: 'gimmick' },
   { id: 'start', name: 'スタート', color: '#f974166c', category: 'gimmick' },
+  { id: 'goal', name: 'ゴール', color: '#f974166c', category: 'gimmick' },
 ];
 
 export default function ChocoMapEditor() {
